@@ -1,34 +1,34 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
-Parameters: 
-    ArtifactName:
-      Type: String
-      Description: The name of the artifact created by Bamboo.
-    LambdaName:
-      Type: String
-      Description: Name of the Lambda function to be deployed.
-    S3Bucket:
-      Type: String
-      Description: Name of the S3 Bucket containing the artifact.
+Parameters:
+  ArtifactName:
+    Type: String
+    Description: The name of the artifact created by Bamboo.
+  LambdaName:
+    Type: String
+    Description: Name of the Lambda function to be deployed.
+  S3Bucket:
+    Type: String
+    Description: Name of the S3 Bucket containing the artifact.
 
 Resources:
   LambdaIamRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: !Sub "${LambdaName}-lambda-role"
-      AssumeRolePolicyDocument: 
+      AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement: 
+        Statement:
           - Effect: "Allow"
-            Principal: 
+            Principal:
               Service: 
-                - "lambda.amazonaws.com"
+                - lambda.amazonaws.com
             Action: 
-              - "sts:AssumeRole"
+              - sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
 
-  LambdaFunction: 
+  LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: !Ref ArtifactName
@@ -37,6 +37,6 @@ Resources:
       Code:
         S3Bucket: !Ref S3Bucket
         S3Key: !Sub "${ArtifactName}.zip"
-      Runtime: "python3.11"
+      Runtime: python3.11
       Timeout: 30
       MemorySize: 128
